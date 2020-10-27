@@ -73,7 +73,7 @@ abstract public class SequencerPlay {
 
     public static void increasePlay() {
         float tempFactor = sequencer.getTempoFactor();
-        sequencer.setTempoFactor((float) (tempFactor * 1.03)); // we can increase by 3%;
+        sequencer.setTempoFactor((float) (tempFactor * 1.03)); // increase by 3%;
     }
 
     public static void downPlay() {
