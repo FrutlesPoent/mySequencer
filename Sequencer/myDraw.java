@@ -8,7 +8,7 @@ import java.awt.*;
 public class myDraw extends JPanel implements ControllerEventListener {
     private int x = 20;
     private int y = 50;
-    boolean msg = false;
+    private boolean msg = false;
 
     @Override
     public void paintComponent(Graphics g){
