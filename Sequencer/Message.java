@@ -1,5 +1,7 @@
 package Sequencer;
 
+import java.lang.*;
+import java.util.*;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiEvent;
 import javax.sound.midi.ShortMessage;
@@ -13,5 +15,15 @@ abstract public class Message {
         MidiEvent noteOn = new MidiEvent(message, moment);
         return noteOn;
     }
+
+//    public static String nameYourMusic(){ // console Input
+//        String name = null;
+//        Scanner in = new Scanner(System.in);
+//        name = in.nextLine();
+//        name = name + ".ser";
+//        if (name != null)
+//            return name;
+//        return "Music.ser";
+//    }
 
 }
