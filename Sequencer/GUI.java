@@ -11,6 +11,8 @@ public class GUI {
     private JFrame mainFrame = new JFrame("Music");
     private ArrayList<JCheckBox> checkBoxesList; // for flags
     private JPanel panel;
+    private String nameMusicSaveText;
+    private JTextField nameText;
 
     private String[] instrumentNames = {"Bass Drum", "Closed Hi - Hat", "Open Hi-Hat", "Acoustic Snare", "Crash Cymbal", // for the label's name
             "Hand Clap", "High Tom", "Hi Bongo", "Maracas", "Whistle", "Low Conga", " Cowbell", " Vibraslap", "Low-mid Tom",
@@ -27,6 +29,10 @@ public class GUI {
         checkBoxesList = new ArrayList<JCheckBox>();
         Box buttonBox = new Box(BoxLayout.Y_AXIS);
 
+        nameText = new JTextField(15);
+        nameText.addActionListener(new MusicNameText());
+        buttonBox.add(nameText);
+
         JButton start = new JButton("start");
         start.addActionListener(new GUI.ButtonStart());
         buttonBox.add(start);
@@ -35,13 +41,25 @@ public class GUI {
         stop.addActionListener(new GUI.ButtonStop());
         buttonBox.add(stop);
 
-        JButton increaseTemp = new JButton("Temp");
+        JButton increaseTemp = new JButton("Temp up");
         increaseTemp.addActionListener(new GUI.ButtonIncreaseTemp());
         buttonBox.add(increaseTemp);
 
         JButton lowerTemp = new JButton("Temp Low");
         lowerTemp.addActionListener(new GUI.ButtonLowerTemp());
         buttonBox.add(lowerTemp);
+
+        JButton saveScheme = new JButton("Save Scheme");
+        saveScheme.addActionListener(new GUI.ButtonSaveScheme());
+        buttonBox.add(saveScheme);
+
+        JButton uploadScheme = new JButton("Upload Scheme");
+        uploadScheme.addActionListener(new ButtonUploadScheme());
+        buttonBox.add(uploadScheme);
+
+        JButton clear = new JButton("Clear");
+        clear.addActionListener(new ButtonClear());
+        buttonBox.add(clear);
 
         Box boxName = new Box(BoxLayout.Y_AXIS);
         for (int i = 0; i < 16; i++)
@@ -66,11 +84,49 @@ public class GUI {
             panel.add(check);
         }
         mainFrame.setBounds(50,50,500, 500);
+        mainFrame.setResizable(false);
         mainFrame.pack();
         mainFrame.setVisible(true);
 
         SequencerPlay.sequencerPlay(instruments, checkBoxesList);
     }
+
+    public class MusicNameText implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            nameMusicSaveText = nameText.getText();
+        }
+    }
+
+    public class ButtonClear implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            SequencerPlay.clearTrack();
+        }
+    }
+
+    public class ButtonSaveScheme implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            SequencerPlay.saveMusic(nameMusicSaveText);
+        }
+    }
+
+    public class ButtonUploadScheme implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                SequencerPlay.restoreMusic(nameMusicSaveText);
+            } catch (InvalidMidiDataException invalidMidiDataException) {
+                invalidMidiDataException.printStackTrace();
+            }
+        }
+    }
+
     public class ButtonStart implements ActionListener {
 
         @Override
@@ -85,6 +141,7 @@ public class GUI {
     }
 
     public class ButtonLowerTemp implements ActionListener {
+
         @Override
         public void actionPerformed(ActionEvent e) {
             SequencerPlay.downPlay();
