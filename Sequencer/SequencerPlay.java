@@ -2,8 +2,9 @@ package Sequencer;
 
 import javax.sound.midi.*;
 import javax.swing.*;
-import java.awt.*;
-import java.lang.reflect.Array;
+import java.io.File;
+import java.io.*;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 
 abstract public class SequencerPlay {
@@ -12,6 +13,7 @@ abstract public class SequencerPlay {
     private static int[] instrumentNames;
     private static Sequencer sequencer;
     private static ArrayList<JCheckBox> checkBoxesList;
+    private static  final int numberOfFlags = 256;
 
     public static void sequencerPlay(int[] instrumentNames, ArrayList<JCheckBox> checkBoxesList){
         try {
@@ -79,5 +81,66 @@ abstract public class SequencerPlay {
     public static void downPlay() {
         float tempFactor = sequencer.getTempoFactor();
         sequencer.setTempoFactor((float) (tempFactor * .97)); // decrease by 3%;
+    }
+
+    public static void restoreMusic(String musicName) throws InvalidMidiDataException {
+        stopPlay();
+
+        String impl = ".ser";
+        if (musicName.indexOf(impl) != -1 ){
+        }else
+            musicName = musicName + ".ser";
+
+        boolean[] checkboxes = null;
+
+        try {
+            FileInputStream stream = new FileInputStream(new File(musicName));
+            ObjectInputStream os = new ObjectInputStream(stream);
+            checkboxes = (boolean[]) os.readObject();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        for (int i = 0; i < numberOfFlags; i++) {
+            JCheckBox check = (JCheckBox) checkBoxesList.get(i);
+            if (checkboxes[i])
+                check.setSelected(true);
+            else
+                check.setSelected(false);
+        }
+        sequencer.stop();
+        buildTrackAndStart();
+    }
+
+    public static void clearTrack() {
+        for (int i = 0; i < numberOfFlags; i++)
+            checkBoxesList.get(i).setSelected(false);
+    }
+
+    public static void saveMusic(String musicName) {
+        stopPlay();
+        String impl = ".ser";
+        if (musicName == null){
+            musicName = "Music.ser";
+        }
+        if (musicName.indexOf(impl) != -1 ){
+        }else
+            musicName = musicName + ".ser";
+
+        boolean[] checkboxes = new boolean[numberOfFlags];
+
+        for (int i = 0; i < numberOfFlags; i++) {
+            JCheckBox check = (JCheckBox) checkBoxesList.get(i);
+            if (check.isSelected())
+                checkboxes[i] = true;
+        }
+
+        try {
+            FileOutputStream fileStream = new FileOutputStream(new File(musicName));
+            ObjectOutputStream os = new ObjectOutputStream(fileStream);
+            os.writeObject(checkboxes);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }
