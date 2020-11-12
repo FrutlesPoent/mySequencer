@@ -7,7 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public class GUI {
+public class GUI extends SequencerPlay {
+
     private JFrame mainFrame = new JFrame("Music");
     private ArrayList<JCheckBox> checkBoxesList; // for flags
     private JPanel panel;
@@ -88,7 +89,7 @@ public class GUI {
         mainFrame.pack();
         mainFrame.setVisible(true);
 
-        SequencerPlay.sequencerPlay(instruments, checkBoxesList);
+        sequencerPlay(instruments, checkBoxesList);
     }
 
     public class MusicNameText implements ActionListener {
@@ -103,7 +104,7 @@ public class GUI {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            SequencerPlay.clearTrack();
+            clearTrack();
         }
     }
 
@@ -111,7 +112,7 @@ public class GUI {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            SequencerPlay.saveMusic(nameMusicSaveText);
+            saveMusic(nameMusicSaveText);
         }
     }
 
@@ -120,7 +121,7 @@ public class GUI {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                SequencerPlay.restoreMusic(nameMusicSaveText);
+                restoreMusic(nameMusicSaveText);
             } catch (InvalidMidiDataException invalidMidiDataException) {
                 invalidMidiDataException.printStackTrace();
             }
@@ -132,7 +133,7 @@ public class GUI {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                SequencerPlay.buildTrackAndStart();
+                buildTrackAndStart();
             } catch (InvalidMidiDataException invalidMidiDataException) {
                 invalidMidiDataException.printStackTrace();
             }
@@ -144,8 +145,7 @@ public class GUI {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            SequencerPlay.downPlay();
-
+            downPlay();
         }
     }
 
@@ -153,8 +153,7 @@ public class GUI {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            SequencerPlay.increasePlay();
-
+            increasePlay();
         }
     }
 
@@ -162,7 +161,7 @@ public class GUI {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            SequencerPlay.stopPlay();
+            stopPlay();
         }
     }
 
