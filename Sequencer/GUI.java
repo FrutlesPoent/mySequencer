@@ -9,8 +9,10 @@ import java.util.ArrayList;
 
 public class GUI extends SequencerPlay {
 
-    private JFrame mainFrame = new JFrame("Music");
-    private ArrayList<JCheckBox> checkBoxesList; // for flags
+    private String title = "MusicBox";
+    private static GUI instance;
+    private JFrame mainFrame = new JFrame(title);
+    protected ArrayList<JCheckBox> checkBoxesList; // for flags
     private JPanel panel;
     private String nameMusicSaveText;
     private JTextField nameText;
@@ -21,7 +23,7 @@ public class GUI extends SequencerPlay {
 
     private int [] instruments =  {35,42,46,38,49,39,50,60,70,72, 64, 56, 58, 58, 47, 67, 63};
 
-    GUI(){
+    private GUI(){
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         BorderLayout layout = new BorderLayout();
         JPanel background = new JPanel();
@@ -62,6 +64,10 @@ public class GUI extends SequencerPlay {
         clear.addActionListener(new ButtonClear());
         buttonBox.add(clear);
 
+        JButton style = new JButton("style");
+        style.addActionListener(new GUI.ButtonStyle());
+        buttonBox.add(style);
+
         Box boxName = new Box(BoxLayout.Y_AXIS);
         for (int i = 0; i < 16; i++)
             boxName.add(new Label(instrumentNames[i]));
@@ -90,6 +96,20 @@ public class GUI extends SequencerPlay {
         mainFrame.setVisible(true);
 
         sequencerPlay(instruments, checkBoxesList);
+    }
+
+    public static GUI getInstance() {
+        if (instance == null){
+            instance = new GUI();
+        }
+        return instance;
+    }
+
+    public class ButtonStyle implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            styleJudgeSpaces();
+        }
     }
 
     public class MusicNameText implements ActionListener {
@@ -164,6 +184,5 @@ public class GUI extends SequencerPlay {
             stopPlay();
         }
     }
-
 
 }
