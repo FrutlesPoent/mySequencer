@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.*;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.TreeSet;
+import java.util.Set;
 
 public class SequencerPlay {
 
@@ -13,8 +15,8 @@ public class SequencerPlay {
     private Sequence seq;
     private int[] instrumentNames;
     private Sequencer sequencer;
-    private ArrayList<JCheckBox> checkBoxesList;
-    private final int numberOfFlags = 256;
+    protected ArrayList<JCheckBox> checkBoxesList;
+    protected final int numberOfFlags = 256;
 
     public void sequencerPlay(int[] instrumentNames, ArrayList<JCheckBox> checkBoxesList){
         try {
@@ -32,8 +34,9 @@ public class SequencerPlay {
 
     public void buildTrackAndStart() throws InvalidMidiDataException {
         int[] trackList = null; // to save for every instrument (16)
-        this.seq.deleteTrack(track); // deleting old one;
-        this.track = this.seq.createTrack(); // creating new one
+        seq.deleteTrack(track); // deleting old one;
+        track = seq.createTrack(); // creating new one
+        int countInstruments = 0;
 
         for (int i = 0; i < 16; i++) {
             trackList = new int[16];
@@ -42,6 +45,7 @@ public class SequencerPlay {
                 JCheckBox jCheckBox = (JCheckBox) this.checkBoxesList.get(j + (16 * i));
                 if (jCheckBox.isSelected()) {
                     trackList[j] = key; //if "yes" then we place key into massive which represents tact;
+                    countInstruments += 1;
                 } else {
                     trackList[j] = 0; // instrument should not play if he equals zero;
                 }
@@ -49,6 +53,10 @@ public class SequencerPlay {
             makeTracks(trackList);
             this.track.add(createMessage(176, 1, 127, 0, 16));
         }
+
+        JudgeOfStyle judge = new StyleInNumberOfInstruments(countInstruments);
+        judge.verdict();
+
         this.track.add(createMessage(192,9,1,0, 15)); // music could not complete all 15 tact's, so we have to be sure;
         try {
             sequencer.setSequence(seq);
@@ -61,6 +69,7 @@ public class SequencerPlay {
     }
 
     private void makeTracks(int[] list) throws InvalidMidiDataException {
+
         for (int i = 0; i < 16; i++) {
             int key = list[i];
             if (key != 0) {
@@ -118,17 +127,38 @@ public class SequencerPlay {
             checkBoxesList.get(i).setSelected(false);
     }
 
+
+    public void styleJudgeSpaces() {
+        System.out.println("True");
+        int countNumberOfSpaces = 0;
+        boolean[] checkboxes = new boolean[numberOfFlags];
+
+        for (int i = 0; i < numberOfFlags; i++) {
+            JCheckBox check = (JCheckBox) checkBoxesList.get(i);
+            if (check.isSelected())
+                countNumberOfSpaces += 1;
+                checkboxes[i] = true;
+        }
+        System.out.println(countNumberOfSpaces);
+
+        JudgeOfStyle style = new StyleInNumberOfSpaces(countNumberOfSpaces);
+        style.verdict();
+    }
+
     public void saveMusic(String musicName) {
         stopPlay();
         String impl = ".ser";
+
         if (musicName == null){
             musicName = "Music.ser";
         }
+
         if (musicName.indexOf(impl) != -1 ){
         }else
             musicName = musicName + ".ser";
 
         boolean[] checkboxes = new boolean[numberOfFlags];
+
 
         for (int i = 0; i < numberOfFlags; i++) {
             JCheckBox check = (JCheckBox) checkBoxesList.get(i);
